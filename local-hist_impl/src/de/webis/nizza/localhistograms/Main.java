@@ -29,7 +29,11 @@ public class Main {
 		if (args == null || args.length == 0) {
 			System.err.println("Please provide correct arguments.");
 		} else {
-			new Main().doStuff();
+			try {
+				new Main().doStuff();
+			} catch (IOException e) {
+				System.err.println("Fail.");
+			}
 		}
 
 	}
