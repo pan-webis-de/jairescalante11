@@ -21,6 +21,10 @@ public class Document {
 		return termsW;
 	}
 
+	public int getNGramCount() {
+		return termsW.size();
+	}
+
 	public void setTerms(List<String> termsw) {
 		this.termsW = termsw;
 
