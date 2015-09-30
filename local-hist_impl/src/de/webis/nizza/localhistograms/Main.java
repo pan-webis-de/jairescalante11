@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,22 +30,57 @@ public class Main {
 
 		int numberOfLocalHistograms = 5; // TODO from list! -> foreach
 		for (Document document : documents) {
-			// int numberOfNgrams = document.getNGramCount();
-			// int subsetLength = numberOfNgrams / numberOfLocalHistograms; //
-			// floor
-			// int muPosition = 0;
-			// int singleNGramNumber = 0;
-			// while (// numberOfNgrams > termLength * mu &&
-			// termLength * (muPosition + 1) < numberOfNgrams) {
-			//
-			// muPosition++;
-			// }
-			// // TODO last run until numberOfNgrams out of while loop
 
-			// TODO
-			document.getTermsPositionWeighted(numberOfLocalHistograms);
+			// TODO needed? makes sense? wtf?
+			List<Double> posWeighted = document
+					.getTermsPositionWeighted(numberOfLocalHistograms);
+
+			// one elem for every kernel location, each of this elems contains a
+			// list over all
+			List<List<WeightedTermElement>> kernelLocationTermsList = new LinkedList<>();
+
+			int numberOfNgrams = document.getNGramCount();
+			int subsetLength = numberOfNgrams / numberOfLocalHistograms; // floor
+			int muPosition = 0;
+			while (// numberOfNgrams > subsetLength * mu &&
+			subsetLength * (muPosition + 1) < numberOfNgrams) {
+				List<WeightedTermElement> weightedTerms = new LinkedList<>();
+				for (int i = muPosition * subsetLength; i < muPosition
+						+ subsetLength; i++) {
+					Double localWeightForMuAtTheMoment = Document
+							.kernelFunction(muPosition + 1, 0.2);
+					String localNgram = document.getTerms().get(i);
+					weightedTerms.add(new WeightedTermElement(
+							localWeightForMuAtTheMoment, i, localNgram,
+							muPosition + 1));
+				}
+				kernelLocationTermsList.add(weightedTerms);
+				muPosition++;
+			}
+			// TODO last run until numberOfNgrams out of while loop
+			List<WeightedTermElement> weightedTerms = new LinkedList<>();
+			for (int i = muPosition * subsetLength; i < numberOfNgrams; i++) {
+				Double localWeightForMuAtTheMoment = Document.kernelFunction(
+						muPosition + 1, 0.2);
+				String localNgram = document.getTerms().get(i);
+				weightedTerms.add(new WeightedTermElement(
+						localWeightForMuAtTheMoment, i, localNgram,
+						muPosition + 1));
+			}
+			kernelLocationTermsList.add(weightedTerms);
 
 			// TODO split in seperate parts -> LH?
+
+			// generate Hist for each Kernel location
+
+			//
+			for (List<WeightedTermElement> kernelLocation : kernelLocationTermsList) {
+				Map<WeightedTermElement, Long> collect = kernelLocation
+						.stream().collect(
+								Collectors.groupingBy(Function.identity(),
+										Collectors.counting()));
+				System.out.println(collect);
+			}
 
 		}
 

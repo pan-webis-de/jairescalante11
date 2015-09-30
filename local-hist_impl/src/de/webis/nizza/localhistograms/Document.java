@@ -69,7 +69,7 @@ public class Document {
 		return termsWeighted;
 	}
 
-	private double kernelFunction(double mu, double position) {
+	public static double kernelFunction(double mu, double position) {
 		double sigma = 0.2;
 		double normalDist = new NormalDistribution(mu, sigma)
 				.cumulativeProbability(position);
@@ -80,6 +80,15 @@ public class Document {
 		// TODO nenner immer nicht 0
 		double result = normalDist / standardDist;
 		return result;
+	}
+
+	// FIXME test!
+	public static Map<String, Long> mergeMaps(Map<String, Long> bigOne,
+			Map<String, Long> map2) {
+		bigOne.forEach((k, v) -> map2.merge(k, v, (v1, v2) -> {
+			return Long.sum(v1, v2);
+		}));
+		return bigOne;
 	}
 
 }
