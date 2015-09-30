@@ -12,7 +12,7 @@ public class Main {
 
 	public void doStuff() throws IOException {
 
-		String path = "asfd";
+		String path = "../corpora/test/";
 		ICorpusManager corpus = new CorpusManager(path);
 
 		List<Document> documents = new LinkedList<Document>();
@@ -28,7 +28,10 @@ public class Main {
 			Document doc = new Document(singleText);
 			doc.setTerms(nGrams);
 
-			System.out.println(doc.generateFrequencyMap());
+			// System.out.println(doc.generateFrequencyMap());
+			// Set<Entry<String, Long>> entries = doc.generateFrequencyMap()
+			// .entrySet();
+			// System.out.println(entries);
 
 			documents.add(doc);
 
@@ -46,15 +49,16 @@ public class Main {
 
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		if (args == null || args.length == 0) {
 			System.err.println("Please provide correct arguments.");
 		} else {
 			try {
 				new Main().doStuff();
-			} catch (IOException e) {
-				System.err.println("Fail. " + e.getMessage());
+			} catch (IOException up) {
+				System.err.println("Fail. " + up.getMessage());
+				throw up;
 			}
 		}
 
