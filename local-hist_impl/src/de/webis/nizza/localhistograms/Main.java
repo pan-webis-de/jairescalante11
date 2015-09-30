@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.math3.distribution.NormalDistribution;
-
 import corpus.CorpusManager;
 import corpus.ICorpusManager;
 import corpus.TextInstance;
@@ -28,10 +26,11 @@ public class Main {
 		List<Document> documents = generateNgrams(corpus, 3,
 				new CharNGramGenerator());
 
-		int numberOfLocalHistograms = 5; // TODO from list!
+		int numberOfLocalHistograms = 5; // TODO from list! -> foreach
 		for (Document document : documents) {
-			int numberOfNgrams = document.getNGramCount();
-			int subsetLength = numberOfNgrams / numberOfLocalHistograms; // floor
+			// int numberOfNgrams = document.getNGramCount();
+			// int subsetLength = numberOfNgrams / numberOfLocalHistograms; //
+			// floor
 			// int muPosition = 0;
 			// int singleNGramNumber = 0;
 			// while (// numberOfNgrams > termLength * mu &&
@@ -41,21 +40,12 @@ public class Main {
 			// }
 			// // TODO last run until numberOfNgrams out of while loop
 
-			List<Double> termsWeighted = new LinkedList<>();
-			for (int i = 0; i < document.getTerms().size(); i++) {
-				String term = document.getTerms().get(i);
+			// TODO
+			document.getTermsPositionWeighted(numberOfLocalHistograms);
 
-				termsWeighted.add(kernelFunction(
-						Math.ceil((double) i / (double) subsetLength)
-								/ (double) numberOfLocalHistograms, (double) i
-								/ (double) numberOfNgrams));
-			}
+			// TODO split in seperate parts -> LH?
 
 		}
-
-		int mu = 5; // TODO check
-		double position = 0.1;
-		double result = kernelFunction(mu, position);
 
 		// TODO vocabulary
 		// Map<String, Long> vocabulary = new HashMap<>();
@@ -77,19 +67,6 @@ public class Main {
 		// System.out.println(text);
 		// System.out.println(nGrams);
 
-	}
-
-	private double kernelFunction(double mu, double position) {
-		double sigma = 0.2;
-		double normalDist = new NormalDistribution(mu, sigma)
-				.cumulativeProbability(position);
-		double standardDist = new NormalDistribution()
-				.cumulativeProbability((1 - mu) / sigma)
-				- new NormalDistribution().cumulativeProbability((0 - mu)
-						/ sigma);
-		// TODO nenner immer nicht 0
-		double result = normalDist / standardDist;
-		return result;
 	}
 
 	private List<Document> generateNgrams(ICorpusManager corpus, int nGramSize,
