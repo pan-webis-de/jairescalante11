@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class CorpusManager implements ICorpusManager {
 	private List<String> authors;
 	private List<TextInstance> knownTexts;
 	private List<File> unknownTexts;
+	private HashMap<File, String> authorTextMapping;
 	
 	private Iterator<TextInstance> knownTextIterator;
 
@@ -72,9 +74,15 @@ public class CorpusManager implements ICorpusManager {
 			unknownTexts.add(new File(unknownFolder, text.getString("unknown-text")));
 		}
 		
+		knownTexts = new ArrayList<TextInstance>();
 		discoverKnownTexts();
-		
 		knownTextIterator = knownTexts.iterator();
+		
+		authorTextMapping = new HashMap<File, String>();
+		for (JsonObject truth : groundData.getJsonArray("ground-truth").getValuesAs(JsonObject.class))
+		{
+			authorTextMapping.put(new File(unknownFolder, truth.getString("unknown-text")), truth.getString("true-author"));
+		}
 	}
 
 	private void discoverKnownTexts() {
@@ -90,7 +98,6 @@ public class CorpusManager implements ICorpusManager {
 			}
 			
 			List<Path> texts = Utilities.getDirectoryContents(authorFolder);
-			knownTexts = new ArrayList<TextInstance>();
 			for (Path text : texts)
 			{
 				if (text.toFile().exists())
@@ -120,9 +127,15 @@ public class CorpusManager implements ICorpusManager {
 	}
 
 	@Override
-	public boolean validateAttribution(String textName, String author) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean validateUnknownAttribution(File text, String author) {
+		if (authorTextMapping.get(text) == author)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	@Override

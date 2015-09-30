@@ -27,6 +27,9 @@ public class Main {
 
 			Document doc = new Document(singleText);
 			doc.setTerms(nGrams);
+
+			System.out.println(doc.generateFrequencyMap());
+
 			documents.add(doc);
 
 			singleText = corpus.getNextText();
@@ -51,7 +54,7 @@ public class Main {
 			try {
 				new Main().doStuff();
 			} catch (IOException e) {
-				System.err.println("Fail.");
+				System.err.println("Fail. " + e.getMessage());
 			}
 		}
 

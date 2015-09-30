@@ -9,33 +9,37 @@ import java.util.List;
 public class TextInstance {
 	private String trueAuthor;
 	private File textSource;
-	private boolean hasText;
-
-	public TextInstance(String author, File newTextSource) {
+	
+	public TextInstance(String author, File newTextSource)
+	{
 		trueAuthor = author;
 		textSource = newTextSource;
-		hasText = false;
 	}
-
+	
+	/**
+	 * Actually loads the text initially specified in the file passed via the constructor.
+	 * The returned string may be very large, so rember to remove it after you're done
+	 * using it. This object stores no text by itself.
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public String getFullText() throws FileNotFoundException, IOException {
 		List<String> fileContents = Files.readAllLines(textSource.toPath());
 		StringBuilder fullFile = new StringBuilder();
-		for (String line : fileContents) {
+		for (String line : fileContents)
+		{
 			fullFile.append(line);
 			fullFile.append("\n");
 		}
 		return fullFile.toString();
 	}
-
+	
 	public File getTextSource() {
 		return textSource;
 	}
-
+	
 	public String getTrueAuthor() {
 		return trueAuthor;
-	}
-
-	public boolean hasText() {
-		return hasText;
 	}
 }
