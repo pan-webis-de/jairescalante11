@@ -14,6 +14,7 @@ public class Document {
 
 	private TextInstance text;
 	private List<String> termsW;
+	private List<Double> lowbowHistogram;
 
 	public Document(TextInstance text) {
 		super();
@@ -89,6 +90,14 @@ public class Document {
 			return Long.sum(v1, v2);
 		}));
 		return bigOne;
+	}
+
+	public List<Double> getLowbowHistogram() {
+		return lowbowHistogram;
+	}
+
+	public void setLowbowHistogram(List<Double> lowbowHistogram) {
+		this.lowbowHistogram = lowbowHistogram;
 	}
 
 }

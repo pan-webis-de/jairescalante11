@@ -56,6 +56,7 @@ public class Main {
 				lowbowHistogram.add(sum);
 			}
 
+			document.setLowbowHistogram(lowbowHistogram);
 			System.out.println(lowbowHistogram);
 
 		}
@@ -108,11 +109,11 @@ public class Main {
 	private WeightedTerm[][] generateWeightedTerms(int numberOfLocalHistograms,
 			Document document, int numberOfNgrams) {
 		WeightedTerm[][] weightedTerms = new WeightedTerm[numberOfLocalHistograms][numberOfNgrams];
-
+		// TODO check this stuff
 		for (int i = 0; i < numberOfLocalHistograms; i++) {
-			double mu = 1 / numberOfLocalHistograms;
+			double mu = (double) i / (double) numberOfLocalHistograms;
 			for (int j = 0; j < numberOfNgrams; j++) {
-				double position = 1 / numberOfNgrams;
+				double position = (double) j / (double) numberOfNgrams;
 				double weight = Document.kernelFunction(mu, position);
 				weightedTerms[i][j] = new WeightedTerm(document.getTerms().get(
 						j), weight);
@@ -125,28 +126,46 @@ public class Main {
 			NGramGenerator nGramtype) throws FileNotFoundException, IOException {
 		List<Document> documents = new LinkedList<Document>();
 
+		// For known texts
 		TextInstance singleText = corpus.getNextText();
 		while (singleText != null) {
 
-			String docText = NGramGenerator
-					.removeLineBreaksAndOtherStuff(singleText.getFullText());
-			// TODO ngrams variabel
-			List<String> nGrams = nGramtype.generateNgrams(nGramSize, docText);
-
-			Document doc = new Document(singleText);
-			doc.setTerms(nGrams);
-
-			// TODO map to set?
-			// System.out.println(doc.generateFrequencyMap());
-			// Set<Entry<String, Long>> entries = doc.generateFrequencyMap()
-			// .entrySet();
-			// System.out.println(entries);
-
-			documents.add(doc);
+			documents.add(generateDocumentStuff(nGramSize, nGramtype,
+					singleText));
 
 			singleText = corpus.getNextText();
 		}
+
+		// For unknown texts
+		singleText = corpus.getUnknownText();
+		while (singleText != null) {
+
+			documents.add(generateDocumentStuff(nGramSize, nGramtype,
+					singleText));
+
+			singleText = corpus.getUnknownText();
+		}
+
 		return documents;
+	}
+
+	private Document generateDocumentStuff(int nGramSize,
+			NGramGenerator nGramtype, TextInstance singleText)
+			throws FileNotFoundException, IOException {
+		String docText = NGramGenerator
+				.removeLineBreaksAndOtherStuff(singleText.getFullText());
+		// TODO ngrams variabel
+		List<String> nGrams = nGramtype.generateNgrams(nGramSize, docText);
+
+		Document doc = new Document(singleText);
+		doc.setTerms(nGrams);
+
+		// TODO map to set?
+		// System.out.println(doc.generateFrequencyMap());
+		// Set<Entry<String, Long>> entries = doc.generateFrequencyMap()
+		// .entrySet();
+		// System.out.println(entries);
+		return doc;
 	}
 
 	public static void main(String[] args) throws IOException {
