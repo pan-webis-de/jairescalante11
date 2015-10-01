@@ -47,7 +47,17 @@ public class Main {
 					vocabulary, numberOfLocalHistograms, numberOfNgrams,
 					weightedTerms);
 
-			System.out.println(localHistograms);
+			List<Double> lowbowHistogram = new LinkedList<>();
+			for (int i = 0; i < vocabulary.size(); i++) {
+				double sum = 0;
+				for (int j = 0; j < localHistograms.size(); j++) {
+					sum += localHistograms.get(j).get(i);
+				}
+				lowbowHistogram.add(sum);
+			}
+
+			System.out.println(lowbowHistogram);
+
 		}
 
 		// TODO vocabulary
@@ -84,8 +94,8 @@ public class Main {
 			// List<Double> localHist = Arrays.asList(new
 			// Double[vocabulary.size()]);
 			for (int j = 0; j < numberOfNgrams; j++) {
-				int position = vocabulary.indexOf(weightedTerms[i][j]
-						.getTerm());
+				int position = vocabulary
+						.indexOf(weightedTerms[i][j].getTerm());
 
 				localHist.set(position, localHist.get(position)
 						+ weightedTerms[i][j].getWeight());
