@@ -39,96 +39,15 @@ public class Main {
 		int numberOfLocalHistograms = 5; // TODO from list! -> foreach
 		for (Document document : documents) {
 
-			// // TODO needed? makes sense? wtf?
-			// List<Double> posWeighted = document
-			// .getTermsPositionWeighted(numberOfLocalHistograms);
-			//
-			// // one elem for every kernel location, each of this elems
-			// contains a
-			// // list over all
-			// List<List<WeightedTermElement>> kernelLocationTermsList = new
-			// LinkedList<>();
-			//
-			// int numberOfNgrams = document.getNGramCount();
-			// int subsetLength = numberOfNgrams / numberOfLocalHistograms; //
-			// floor
-			// int muPosition = 0;
-			// while (// numberOfNgrams > subsetLength * mu &&
-			// subsetLength * (muPosition + 1) < numberOfNgrams) {
-			// List<WeightedTermElement> weightedTermsOld = new LinkedList<>();
-			// for (int i = muPosition * subsetLength; i < muPosition
-			// + subsetLength; i++) {
-			// Double localWeightForMuAtTheMoment = Document
-			// .kernelFunction(muPosition, 0.2);
-			// String localNgram = document.getTerms().get(i);
-			// weightedTermsOld.add(new WeightedTermElement(
-			// localWeightForMuAtTheMoment, i, localNgram,
-			// muPosition));
-			// }
-			// kernelLocationTermsList.add(weightedTermsOld);
-			// muPosition++;
-			// }
-			// // TODO last run until numberOfNgrams out of while loop
-			// List<WeightedTermElement> weightedTermsOld = new LinkedList<>();
-			// for (int i = muPosition * subsetLength; i < numberOfNgrams; i++)
-			// {
-			// Double localWeightForMuAtTheMoment = Document.kernelFunction(
-			// muPosition + 1, 0.2);
-			// String localNgram = document.getTerms().get(i);
-			// weightedTermsOld.add(new WeightedTermElement(
-			// localWeightForMuAtTheMoment, i, localNgram,
-			// muPosition + 1));
-			// }
-			// kernelLocationTermsList.add(weightedTermsOld);
-			//
-			// // TODO split in seperate parts -> LH?
-			//
-			// // generate Hist for each Kernel location
-			//
-			// //
-			// for (List<WeightedTermElement> kernelLocation :
-			// kernelLocationTermsList) {
-			// Map<WeightedTermElement, Long> collect = kernelLocation
-			// .stream().collect(
-			// Collectors.groupingBy(Function.identity(),
-			// Collectors.counting()));
-			// System.out.println(collect);
-			// }
-
-			// TODO NEEEEEEW
 			int numberOfNgrams = document.getNGramCount();
-			WeightedTerm[][] weightedTerms = new WeightedTerm[numberOfLocalHistograms][numberOfNgrams];
+			WeightedTerm[][] weightedTerms = generateWeightedTerms(
+					numberOfLocalHistograms, document, numberOfNgrams);
 
-			for (int i = 0; i < numberOfLocalHistograms; i++) {
-				double mu = 1 / numberOfLocalHistograms;
-				for (int j = 0; j < numberOfNgrams; j++) {
-					double position = 1 / numberOfNgrams;
-					double weight = Document.kernelFunction(mu, position);
-					weightedTerms[i][j] = new WeightedTerm(document.getTerms()
-							.get(j), weight);
-				}
-			}
-
-			List<List<Double>> localHistograms = new LinkedList<>();
-			for (int i = 0; i < numberOfLocalHistograms; i++) {
-				List<Double> localHist = new ArrayList<>();
-				for (int j = 0; j < vocabulary.size(); j++) {
-					localHist.add(0.d);
-				}
-				// List<Double> localHist = Arrays.asList(new
-				// Double[vocabulary.size()]);
-				for (int j = 0; j < numberOfNgrams; j++) {
-					int position = vocabulary.indexOf(weightedTerms[i][j]
-							.getTerm());
-
-					localHist.set(position, localHist.get(position)
-							+ weightedTerms[i][j].getWeight());
-				}
-				localHistograms.add(localHist);
-			}
+			List<List<Double>> localHistograms = generateLocalHistograms(
+					vocabulary, numberOfLocalHistograms, numberOfNgrams,
+					weightedTerms);
 
 			System.out.println(localHistograms);
-
 		}
 
 		// TODO vocabulary
@@ -151,6 +70,45 @@ public class Main {
 		// System.out.println(text);
 		// System.out.println(nGrams);
 
+	}
+
+	private List<List<Double>> generateLocalHistograms(List<String> vocabulary,
+			int numberOfLocalHistograms, int numberOfNgrams,
+			WeightedTerm[][] weightedTerms) {
+		List<List<Double>> localHistograms = new LinkedList<>();
+		for (int i = 0; i < numberOfLocalHistograms; i++) {
+			List<Double> localHist = new ArrayList<>();
+			for (int j = 0; j < vocabulary.size(); j++) {
+				localHist.add(0.d);
+			}
+			// List<Double> localHist = Arrays.asList(new
+			// Double[vocabulary.size()]);
+			for (int j = 0; j < numberOfNgrams; j++) {
+				int position = vocabulary.indexOf(weightedTerms[i][j]
+						.getTerm());
+
+				localHist.set(position, localHist.get(position)
+						+ weightedTerms[i][j].getWeight());
+			}
+			localHistograms.add(localHist);
+		}
+		return localHistograms;
+	}
+
+	private WeightedTerm[][] generateWeightedTerms(int numberOfLocalHistograms,
+			Document document, int numberOfNgrams) {
+		WeightedTerm[][] weightedTerms = new WeightedTerm[numberOfLocalHistograms][numberOfNgrams];
+
+		for (int i = 0; i < numberOfLocalHistograms; i++) {
+			double mu = 1 / numberOfLocalHistograms;
+			for (int j = 0; j < numberOfNgrams; j++) {
+				double position = 1 / numberOfNgrams;
+				double weight = Document.kernelFunction(mu, position);
+				weightedTerms[i][j] = new WeightedTerm(document.getTerms().get(
+						j), weight);
+			}
+		}
+		return weightedTerms;
 	}
 
 	private List<Document> generateNgrams(ICorpusManager corpus, int nGramSize,
