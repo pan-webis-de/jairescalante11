@@ -8,5 +8,5 @@ public interface ICorpusManager {
 	public List<String> getAllAuthors();
 	public int getTextCount();
 	boolean validateUnknownAttribution(File text, String author);
-	
+	public TextInstance getUnknownText();
 }
