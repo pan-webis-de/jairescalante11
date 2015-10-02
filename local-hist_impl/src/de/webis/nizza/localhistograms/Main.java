@@ -23,8 +23,8 @@ public class Main {
 		List<Integer> numberOfHistograms = Stream.of(2, 5, 20).collect(
 				Collectors.toList());
 
-		String path = "../corpora/test/"; // TODO variable
-		ICorpusManager corpus = new CorpusManager(path);
+		String path = "../corpora/C10/"; // TODO variable
+		CorpusManager corpus = new CorpusManager(path);
 
 		List<Document> documents = generateNgrams(corpus, 3,
 				new CharNGramGenerator());
@@ -71,18 +71,23 @@ public class Main {
 		List<Document> unknown = documents
 				.stream()
 				.filter(e -> e.getTextInstance().getTrueAuthor()
-						.equals("UNKNOWN")).collect(Collectors.toList());
+						.contains("unknown")).collect(Collectors.toList());
 
 		Svm svm = new Svm(documents);
 		svm_model model = svm.svmTrain();
 
 		for (Document unknownDoc : unknown) {
 			List<Double> toPassValues = new ArrayList<>();
-			toPassValues.add(Double.NaN);
+			toPassValues.add(Double
+					.parseDouble(corpus
+							.getAuthorTextMapping()
+							.get(unknownDoc.getTextInstance().getTextSource()
+									.getName()).substring(9, 14))); // TODO
+																	// 7,12?
 			toPassValues.addAll(unknownDoc.getLowbowHistogram());
-			svm.evaluate(
-					toPassValues.toArray(new Double[unknown.get(0)
-							.getLowbowHistogram().size()]), model);
+			svm.evaluate(toPassValues.toArray(new Double[unknown.get(0)
+					.getLowbowHistogram().size()]), model, corpus
+					.getAllAuthors().size());
 
 		}
 

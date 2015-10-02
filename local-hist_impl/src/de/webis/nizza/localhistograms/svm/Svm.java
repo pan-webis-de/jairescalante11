@@ -24,7 +24,7 @@ public class Svm {
 		this.knownDocuments = documents
 				.stream()
 				.filter(e -> !e.getTextInstance().getTrueAuthor()
-						.equals("UNKNOWN")).collect(Collectors.toList());
+						.contains("unknown")).collect(Collectors.toList());
 		// this.dataCount = documents.stream().map(e -> e.getTextInstance())
 		// .filter(e -> !e.getTrueAuthor().equals("UNKNOWN"))
 		// .mapToInt(e -> 1).sum();
@@ -78,7 +78,7 @@ public class Svm {
 		return model;
 	}
 
-	public double evaluate(Double[] features, svm_model model) {
+	public double evaluate(Double[] features, svm_model model, int classes) {
 		svm_node[] nodes = new svm_node[features.length - 1];
 		for (int i = 1; i < features.length; i++) {
 			svm_node node = new svm_node();
@@ -88,7 +88,7 @@ public class Svm {
 			nodes[i - 1] = node;
 		}
 
-		int totalClasses = 2;
+		int totalClasses = classes;
 		int[] labels = new int[totalClasses];
 		svm.svm_get_labels(model, labels);
 
