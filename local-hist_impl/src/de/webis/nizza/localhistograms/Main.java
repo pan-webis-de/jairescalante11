@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import libsvm.svm_model;
 import corpus.CorpusManager;
 import corpus.ICorpusManager;
 import corpus.TextInstance;
 import de.webis.nizza.localhistograms.ngram.CharNGramGenerator;
 import de.webis.nizza.localhistograms.ngram.NGramGenerator;
+import de.webis.nizza.localhistograms.svm.Svm;
 
 public class Main {
 
@@ -57,7 +59,30 @@ public class Main {
 			}
 
 			document.setLowbowHistogram(lowbowHistogram);
-			System.out.println(lowbowHistogram);
+			// System.out.println(lowbowHistogram);
+			System.out.println("[LOG] new LowbowHist generated");
+		}
+
+		// TODO nur erste 2500
+		// TODO werte in vektor zwischen 0 und 1
+
+		System.out.println("[LOG] Running SVM");
+
+		List<Document> unknown = documents
+				.stream()
+				.filter(e -> e.getTextInstance().getTrueAuthor()
+						.equals("UNKNOWN")).collect(Collectors.toList());
+
+		Svm svm = new Svm(documents);
+		svm_model model = svm.svmTrain();
+
+		for (Document unknownDoc : unknown) {
+			List<Double> toPassValues = new ArrayList<>();
+			toPassValues.add(Double.NaN);
+			toPassValues.addAll(unknownDoc.getLowbowHistogram());
+			svm.evaluate(
+					toPassValues.toArray(new Double[unknown.get(0)
+							.getLowbowHistogram().size()]), model);
 
 		}
 
