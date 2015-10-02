@@ -31,7 +31,7 @@ public class LocalHistogramAnalyzer {
 		this.outputPath = outputPath;
 	}
 
-	public void analyze() throws IOException {
+	public List<SvmResult> analyze() throws IOException {
 
 		CorpusManager corpus = new CorpusManager(inputPath);
 
@@ -47,7 +47,7 @@ public class LocalHistogramAnalyzer {
 		List<SvmResult> svmResults = predictAuthorsWithSVM(corpus, documents);
 
 		System.out.println(svmResults);
-
+		return svmResults;
 	}
 
 	private List<String> generateVocabulary(List<Document> documents) {

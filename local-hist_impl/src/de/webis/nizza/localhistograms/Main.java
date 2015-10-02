@@ -1,6 +1,9 @@
 package de.webis.nizza.localhistograms;
 
 import java.io.IOException;
+import java.util.List;
+
+import de.webis.nizza.localhistograms.svm.SvmResult;
 
 public class Main {
 
@@ -15,7 +18,8 @@ public class Main {
 			// }
 
 			try {
-				new LocalHistogramAnalyzer("../corpora/C10/", null).analyze();
+				List<SvmResult> results = new LocalHistogramAnalyzer(
+						"../corpora/C10/", null).analyze();
 			} catch (IOException up) {
 				System.err.println("Fail. " + up.getMessage());
 				throw up;
