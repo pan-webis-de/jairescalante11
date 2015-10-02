@@ -78,7 +78,7 @@ public class Svm {
 		return model;
 	}
 
-	public double evaluate(Double[] features, svm_model model, int classes) {
+	public SvmResult evaluate(Double[] features, svm_model model, int classes) {
 		svm_node[] nodes = new svm_node[features.length - 1];
 		for (int i = 1; i < features.length; i++) {
 			svm_node node = new svm_node();
@@ -100,7 +100,7 @@ public class Svm {
 		// }
 		System.out.println("(Actual:" + features[0] + " Prediction:" + v + ")");
 
-		return v;
+		return new SvmResult(features[0], v);
 	}
 
 }
