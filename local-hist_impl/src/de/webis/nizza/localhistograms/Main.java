@@ -6,12 +6,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import libsvm.svm_model;
 import corpus.CorpusManager;
@@ -24,51 +20,27 @@ import de.webis.nizza.localhistograms.svm.SvmResult;
 
 public class Main {
 
-	public void doStuff() throws IOException {
+	private final long mostCommonNGramCount = 2500;
+	private final int numberOfLocalHistograms = 5;
+	private final int nGramSize = 3;
 
-		List<Integer> numberOfHistograms = Stream.of(2, 5, 20).collect(
-				Collectors.toList());
+	public void doStuff() throws IOException {
 
 		String path = "../corpora/C10/"; // TODO variable
 		CorpusManager corpus = new CorpusManager(path);
 
-		List<Document> documents = generateNgrams(corpus, 3,
+		List<Document> documents = generateNgrams(corpus, nGramSize,
 				new CharNGramGenerator());
 
 		List<String> vocabulary = generateVocabulary(documents);
 
-		int numberOfLocalHistograms = 5; // TODO from list! -> foreach
-
-		// TODO start numberOfHistograms foreach
 		generateLowbowForAllDocs(documents, vocabulary, numberOfLocalHistograms);
 
-		// TODO nur erste 2500
 		// TODO werte in vektor zwischen 0 und 1
 
 		List<SvmResult> svmResults = predictAuthorsWithSVM(corpus, documents);
-		// TODO end numberOfHistograms foreach
 
 		System.out.println(svmResults);
-
-		// TODO vocabulary
-		// Map<String, Long> vocabulary = new HashMap<>();
-		// for (Document document : documents) {
-		// vocabulary.forEach((k, v) -> document.generateFrequencyMap().merge(
-		// k, v, (v1, v2) -> {
-		// return Long.sum(v1, v2);
-		// }));
-		// }
-		//
-		// System.out.println(vocabulary);
-
-		// String inputText = "Hallo Welt, wir sind\n alle noch da!";
-		// String text =
-		// NGramGenerator.removeLineBreaksAndOtherStuff(inputText);
-		// List<String> nGrams = NGramGenerator.generateCharNgram(3, text);
-		//
-		// System.out.println(inputText);
-		// System.out.println(text);
-		// System.out.println(nGrams);
 
 	}
 
@@ -82,24 +54,66 @@ public class Main {
 								Collectors.counting()));
 
 		System.out.println("[LOG] Finished Vocabulary");
-		List<String> vocabularyList = vocabulary.keySet().stream()
+		List<String> vocabularyList = vocabulary.entrySet().stream()
+				.sorted((a, b) -> b.getValue().compareTo(a.getValue()))
+				.limit(mostCommonNGramCount).map(e -> e.getKey())
 				.collect(Collectors.toList());
+		// List<String> vocabularyList = vocabulary.keySet().stream()
+		// .collect(Collectors.toList());
+		documents.stream().forEach(
+				e -> e.setTerms(e.getTerms().stream()
+						.filter(d -> vocabularyList.contains(d))
+						.collect(Collectors.toList())));
 		return vocabularyList;
 	}
 
 	private void generateLowbowForAllDocs(List<Document> documents,
 			List<String> vocabulary, int numberOfLocalHistograms) {
-		ExecutorService exec = Executors.newCachedThreadPool();
+		documents
+				.parallelStream()
+				.map(e -> {// generate set of Histograms
+					List<List<Double>> localHistograms = generateLocalHistograms(
+							vocabulary, numberOfLocalHistograms,
+							e.getNGramCount(), e.getTerms());
 
-		for (Document document : documents) {
+					// aggregate histograms to single lowbow histogram
+					List<Double> lowbowHist = new LinkedList<>();
+					for (int i = 0; i < vocabulary.size(); i++) {
+						double sum = 0;
+						for (int j = 0; j < localHistograms.size(); j++) {
+							sum += localHistograms.get(j).get(i);
+						}
+						lowbowHist.add(sum);
+					}
+					e.setLowbowHistogram(lowbowHist);
+					return lowbowHist;
 
-			Future<List<Double>> lowbowHistResult = exec
-					.submit(new LocalHistogramGenerator(document
-							.getNGramCount(), document.getTerms(),
-							numberOfLocalHistograms, vocabulary));
-			document.setLowbowHistogram(lowbowHistResult);
+				}).forEach(e -> System.out.println("[LOG] Lowbow generated"));
 
+	}
+
+	private List<List<Double>> generateLocalHistograms(List<String> vocabulary,
+			int numberOfLocalHistograms, int numberOfNgrams, List<String> terms) {
+		List<List<Double>> localHistograms = new LinkedList<>();
+		for (int i = 0; i < numberOfLocalHistograms; i++) {
+			List<Double> localHist = new ArrayList<>();
+			double mu = (double) i / (double) numberOfLocalHistograms;
+			for (int j = 0; j < vocabulary.size(); j++) {
+				localHist.add(0.d);
+			}
+			// List<Double> localHist = Arrays.asList(new
+			// Double[vocabulary.size()]);
+			for (int j = 0; j < numberOfNgrams; j++) {
+				double position = (double) j / (double) numberOfNgrams;
+				double weight = Document.kernelFunction(mu, position);
+				int vposition = vocabulary.indexOf(terms.get(j));
+
+				localHist.set(vposition, localHist.get(vposition) + weight);
+			}
+
+			localHistograms.add(localHist);
 		}
+		return localHistograms;
 	}
 
 	private List<SvmResult> predictAuthorsWithSVM(CorpusManager corpus,

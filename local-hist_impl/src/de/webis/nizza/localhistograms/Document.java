@@ -3,8 +3,6 @@ package de.webis.nizza.localhistograms;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -16,7 +14,7 @@ public class Document {
 
 	private TextInstance text;
 	private List<String> termsW;
-	private Future<List<Double>> lowbowHistogram;
+	private List<Double> lowbowHistogram;
 
 	public Document(TextInstance text) {
 		super();
@@ -95,17 +93,10 @@ public class Document {
 	}
 
 	public List<Double> getLowbowHistogram() {
-		try {
-			System.out.println("[LOG] Histogram request");
-			return lowbowHistogram.get();
-		} catch (InterruptedException | ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
+		return lowbowHistogram;
 	}
 
-	public void setLowbowHistogram(Future<List<Double>> lowbowHistogram) {
+	public void setLowbowHistogram(List<Double> lowbowHistogram) {
 		this.lowbowHistogram = lowbowHistogram;
 	}
 
