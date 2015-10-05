@@ -98,9 +98,9 @@ public class Svm {
 		// for (int i = 0; i < totalClasses; i++) {
 		// System.out.print("(" + labels[i] + ":" + prob_estimates[i] + ")");
 		// }
-		System.out.println("(Actual:" + features[0] + " Prediction:" + v + ")");
-
-		return new SvmResult(features[0], v);
+		System.out.println("(Actual:" + features[0] + " Prediction:" + v
+				+ " Confidence:" + prob_estimates[((int) v) - 1] + ")");
+		return new SvmResult(features[0], v, prob_estimates[((int) v) - 1]);
 	}
 
 }

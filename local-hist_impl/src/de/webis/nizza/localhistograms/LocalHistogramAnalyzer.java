@@ -29,7 +29,7 @@ public class LocalHistogramAnalyzer {
 
 	public LocalHistogramAnalyzer(String inputPath, String outputPath) {
 		this.inputPath = inputPath;
-		this.outputPath = outputPath;
+		this.outputPath = outputPath + "output.json";
 	}
 
 	public List<SvmResult> analyze() throws IOException {
@@ -91,6 +91,7 @@ public class LocalHistogramAnalyzer {
 
 	private void generateLowbowForAllDocs(List<Document> documents,
 			List<String> vocabulary, int numberOfLocalHistograms) {
+		System.out.println("[LOG] generating LOWBOW");
 		documents
 				.parallelStream()
 				.map(e -> {// generate set of Histograms
@@ -110,7 +111,7 @@ public class LocalHistogramAnalyzer {
 					e.setLowbowHistogram(lowbowHist);
 					return lowbowHist;
 
-				}).forEach(e -> System.out.println("[LOG] Lowbow generated"));
+				}).forEach(e -> System.out.print("."));
 
 	}
 

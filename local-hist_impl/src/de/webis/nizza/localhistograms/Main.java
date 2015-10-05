@@ -18,8 +18,9 @@ public class Main {
 			// }
 
 			try {
-				List<SvmResult> results = new LocalHistogramAnalyzer(
-						"../corpora/C10/", null).analyze();
+				String inPath = "../corpora/C10/";
+				List<SvmResult> results = new LocalHistogramAnalyzer(inPath,
+						inPath).analyze();
 			} catch (IOException up) {
 				System.err.println("Fail. " + up.getMessage());
 				throw up;

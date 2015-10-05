@@ -1,0 +1,18 @@
+n-gram-size:3
+mostCommonNgramCount:2500
+
+char:
+numberOfLHs=1, correct:380 wrong:120 percent correct:0.76, correct:377 wrong:123 percent correct:0.754
+numberOfLHs=2, correct:375 wrong:125 percent correct:0.75, correct:374 wrong:126 percent correct:0.748
+numberOfLHs=5, correct:375 wrong:125 percent correct:0.75, correct:373 wrong:127 percent correct:0.746
+numberOfLHs=20, correct:375 wrong:125 percent correct:0.75
+
+
+words:
+numberOfLHs=1, correct:324 wrong:176 percent correct:0.648
+numberOfLHs=2, orrect:317 wrong:183 percent correct:0.634
+numberOfLHs=5, correct:304 wrong:196 percent correct:0.608
+numberOfLHs=20, correct:305 wrong:195 percent correct:0.61, correct:306 wrong:194 percent correct:0.612
+
+
+
