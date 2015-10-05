@@ -23,8 +23,9 @@ public class LocalHistogramAnalyzer {
 	private final long mostCommonNGramCount = 2500;
 	private final int numberOfLocalHistograms = 5;
 	private final int nGramSize = 3;
-	private String outputPath;
-	private String inputPath;
+	private final String outputPath;
+	private final String inputPath;
+	private final NGramGenerator nGramGenerator = new CharNGramGenerator();
 
 	public LocalHistogramAnalyzer(String inputPath, String outputPath) {
 		this.inputPath = inputPath;
@@ -36,7 +37,7 @@ public class LocalHistogramAnalyzer {
 		CorpusManager corpus = new CorpusManager(inputPath);
 
 		List<Document> documents = generateNgrams(corpus, nGramSize,
-				new CharNGramGenerator());
+				nGramGenerator);
 
 		List<String> vocabulary = generateVocabulary(documents);
 
@@ -46,7 +47,22 @@ public class LocalHistogramAnalyzer {
 
 		List<SvmResult> svmResults = predictAuthorsWithSVM(corpus, documents);
 
+		// Debug outputs
 		System.out.println(svmResults);
+		int correct = 0;
+		int wrong = 0;
+		for (SvmResult svmResult : svmResults) {
+			if (svmResult.getActual() == svmResult.getPrediction()) {
+				correct++;
+			} else {
+				wrong++;
+			}
+		}
+
+		System.out.println("correct:" + correct + " wrong:" + wrong
+				+ " percent correct:" + (double) correct
+				/ (double) corpus.getUnknownTextCount());
+
 		return svmResults;
 	}
 
