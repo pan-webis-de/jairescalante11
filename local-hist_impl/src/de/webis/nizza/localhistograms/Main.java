@@ -3,7 +3,7 @@ package de.webis.nizza.localhistograms;
 import java.io.IOException;
 import java.util.List;
 
-import de.webis.nizza.localhistograms.svm.SvmResult;
+import de.webis.nizza.localhistograms.svm.EnrichedSvmResult;
 
 public class Main {
 
@@ -19,8 +19,9 @@ public class Main {
 
 			try {
 				String inPath = "../corpora/C10/";
-				List<SvmResult> results = new LocalHistogramAnalyzer(inPath,
+				List<EnrichedSvmResult> results = new LocalHistogramAnalyzer(
 						inPath).analyze();
+				new ResultWriter(inPath + "output.json").writeJsonFile(results);
 			} catch (IOException up) {
 				System.err.println("Fail. " + up.getMessage());
 				throw up;

@@ -15,6 +15,7 @@ import corpus.ICorpusManager;
 import corpus.TextInstance;
 import de.webis.nizza.localhistograms.ngram.CharNGramGenerator;
 import de.webis.nizza.localhistograms.ngram.NGramGenerator;
+import de.webis.nizza.localhistograms.svm.EnrichedSvmResult;
 import de.webis.nizza.localhistograms.svm.Svm;
 import de.webis.nizza.localhistograms.svm.SvmResult;
 
@@ -23,16 +24,14 @@ public class LocalHistogramAnalyzer {
 	private final long mostCommonNGramCount = 2500;
 	private final int numberOfLocalHistograms = 5;
 	private final int nGramSize = 3;
-	private final String outputPath;
 	private final String inputPath;
 	private final NGramGenerator nGramGenerator = new CharNGramGenerator();
 
-	public LocalHistogramAnalyzer(String inputPath, String outputPath) {
+	public LocalHistogramAnalyzer(String inputPath) {
 		this.inputPath = inputPath;
-		this.outputPath = outputPath + "output.json";
 	}
 
-	public List<SvmResult> analyze() throws IOException {
+	public List<EnrichedSvmResult> analyze() throws IOException {
 
 		CorpusManager corpus = new CorpusManager(inputPath);
 
@@ -45,14 +44,16 @@ public class LocalHistogramAnalyzer {
 
 		// TODO werte in vektor zwischen 0 und 1
 
-		List<SvmResult> svmResults = predictAuthorsWithSVM(corpus, documents);
+		List<EnrichedSvmResult> svmResults = predictAuthorsWithSVM(corpus,
+				documents);
 
 		// Debug outputs
 		System.out.println(svmResults);
 		int correct = 0;
 		int wrong = 0;
-		for (SvmResult svmResult : svmResults) {
-			if (svmResult.getActual() == svmResult.getPrediction()) {
+		for (EnrichedSvmResult svmResult : svmResults) {
+			if (svmResult.getSvmResult().getActual() == svmResult
+					.getSvmResult().getPrediction()) {
 				correct++;
 			} else {
 				wrong++;
@@ -60,7 +61,7 @@ public class LocalHistogramAnalyzer {
 		}
 
 		System.out.println("correct:" + correct + " wrong:" + wrong
-				+ " percent correct:" + (double) correct
+				+ " percent-correct:" + (double) correct
 				/ (double) corpus.getUnknownTextCount());
 
 		return svmResults;
@@ -139,7 +140,7 @@ public class LocalHistogramAnalyzer {
 		return localHistograms;
 	}
 
-	private List<SvmResult> predictAuthorsWithSVM(CorpusManager corpus,
+	private List<EnrichedSvmResult> predictAuthorsWithSVM(CorpusManager corpus,
 			List<Document> documents) {
 		System.out.println("[LOG] Running SVM");
 
@@ -151,7 +152,7 @@ public class LocalHistogramAnalyzer {
 		Svm svm = new Svm(documents);
 		svm_model model = svm.svmTrain();
 
-		List<SvmResult> svmResults = new ArrayList<>();
+		List<EnrichedSvmResult> svmResults = new ArrayList<>();
 		for (Document unknownDoc : unknown) {
 			List<Double> toPassValues = new ArrayList<>();
 			toPassValues.add(Double
@@ -164,7 +165,12 @@ public class LocalHistogramAnalyzer {
 			SvmResult result = svm.evaluate(toPassValues
 					.toArray(new Double[unknown.get(0).getLowbowHistogram()
 							.size()]), model, corpus.getAllAuthors().size());
-			svmResults.add(result);
+			String candidateAuthor = corpus.getAllAuthors().get(
+					((int) result.getPrediction()) - 1);
+			String file = unknownDoc.getTextInstance().getTextSource()
+					.getName();
+			svmResults
+					.add(new EnrichedSvmResult(candidateAuthor, file, result));
 		}
 		return svmResults;
 	}
