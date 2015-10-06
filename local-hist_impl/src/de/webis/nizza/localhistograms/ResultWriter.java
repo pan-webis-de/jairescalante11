@@ -34,7 +34,8 @@ public class ResultWriter {
 			JsonObject answerJson = Json.createObjectBuilder()
 					.add("unknown-text", result.getUnknownTextName())
 					.add("author", result.getCandidateAuthor())
-					.add("score", 1.0).build();
+					.add("score", result.getSvmResult().getConfidence())
+					.build();
 
 			answerJsonArray.add(answerJson);
 
