@@ -13,7 +13,7 @@ import de.webis.nizza.localhistograms.Document;
 
 public class Svm {
 
-	Double[][] train;
+	Double[][] train; // train[i] -> ein document
 	private List<Document> documents;
 	private int dataCount;
 	private List<Document> knownDocuments;
@@ -47,9 +47,9 @@ public class Svm {
 
 	public svm_model svmTrain() {
 		svm_problem prob = new svm_problem();
-		prob.y = new double[dataCount];
+		prob.y = new double[dataCount]; // authors
 		prob.l = dataCount;
-		prob.x = new svm_node[dataCount][];
+		prob.x = new svm_node[dataCount][]; // ngram data
 
 		for (int i = 0; i < dataCount; i++) {
 			Double[] features = train[i];
@@ -60,7 +60,7 @@ public class Svm {
 				node.value = features[j];
 				prob.x[i][j - 1] = node;
 			}
-			prob.y[i] = features[0];
+			prob.y[i] = features[0]; // author
 		}
 
 		svm_parameter param = new svm_parameter();
