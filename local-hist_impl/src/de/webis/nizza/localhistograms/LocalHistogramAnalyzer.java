@@ -14,7 +14,7 @@ import corpus.CorpusManager;
 import corpus.ICorpusManager;
 import corpus.TextInstance;
 import de.webis.nizza.localhistograms.aggregatedHistogram.AggregatedHistogram;
-import de.webis.nizza.localhistograms.aggregatedHistogram.LowbowHistogram;
+import de.webis.nizza.localhistograms.aggregatedHistogram.BagOfLocalHistograms;
 import de.webis.nizza.localhistograms.ngram.CharNGramGenerator;
 import de.webis.nizza.localhistograms.ngram.NGramGenerator;
 import de.webis.nizza.localhistograms.svm.EnrichedSvmResult;
@@ -28,7 +28,7 @@ public class LocalHistogramAnalyzer {
 	private final int nGramSize = 3;
 	private final String inputPath;
 	private final NGramGenerator nGramGenerator = new CharNGramGenerator();
-	private final AggregatedHistogram histogramAggregator = new LowbowHistogram();
+	private final AggregatedHistogram histogramAggregator = new BagOfLocalHistograms();
 
 	public LocalHistogramAnalyzer(String inputPath) {
 		this.inputPath = inputPath;
