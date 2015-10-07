@@ -30,7 +30,7 @@ numberOfLHs=20, correct:379 wrong:121 percent-correct:0.758
 words:
 numberOfLHs=1, correct:329 wrong:171 percent-correct:0.658
 numberOfLHs=2, correct:325 wrong:175 percent-correct:0.65
-numberOfLHs=5, correct:320 wrong:180 percent-correct:0.64, correct:322 wrong:178 percent-correct:0.644
+numberOfLHs=5, correct:320 wrong:180 percent-correct:0.64
 numberOfLHs=20, correct:311 wrong:189 percent-correct:0.622
 
 
