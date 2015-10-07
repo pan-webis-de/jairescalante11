@@ -1,3 +1,4 @@
+LOWBOW
 n-gram-size:3
 mostCommonNgramCount:2500
 
@@ -14,5 +15,22 @@ numberOfLHs=2, orrect:317 wrong:183 percent correct:0.634
 numberOfLHs=5, correct:304 wrong:196 percent correct:0.608
 numberOfLHs=20, correct:305 wrong:195 percent correct:0.61, correct:306 wrong:194 percent correct:0.612
 
+
+BOLH
+n-gram-size:3
+mostCommonNgramCount:2500
+
+char:
+numberOfLHs=1, correct:376 wrong:124 percent-correct:0.752
+numberOfLHs=2, correct:381 wrong:119 percent-correct:0.762
+numberOfLHs=5, correct:379 wrong:121 percent-correct:0.758, correct:377 wrong:123 percent-correct:0.754
+numberOfLHs=20, correct:379 wrong:121 percent-correct:0.758
+
+
+words:
+numberOfLHs=1, correct:329 wrong:171 percent-correct:0.658
+numberOfLHs=2, correct:325 wrong:175 percent-correct:0.65
+numberOfLHs=5, correct:320 wrong:180 percent-correct:0.64, correct:322 wrong:178 percent-correct:0.644
+numberOfLHs=20, correct:311 wrong:189 percent-correct:0.622
 
 
