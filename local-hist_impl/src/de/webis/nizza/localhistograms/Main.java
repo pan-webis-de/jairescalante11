@@ -14,6 +14,7 @@ public class Main {
 		} else {
 
 			// TODO validate input args
+			// TODO JVM more RAM...
 			String inPath = "";
 			if (args[0].equals("-i")) {
 				inPath = args[1];
