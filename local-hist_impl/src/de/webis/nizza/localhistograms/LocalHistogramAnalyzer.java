@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -43,12 +44,13 @@ public class LocalHistogramAnalyzer {
 
 		List<String> vocabulary = generateVocabulary(documents);
 
-		generateLowbowForAllDocs(documents, vocabulary, numberOfLocalHistograms);
+		List<Document> sortedLowbowDocuments = generateLowbowForAllDocs(
+				documents, vocabulary, numberOfLocalHistograms);
 
 		// TODO werte in vektor zwischen 0 und 1
 
 		List<EnrichedSvmResult> svmResults = predictAuthorsWithSVM(corpus,
-				documents);
+				sortedLowbowDocuments);
 
 		// Debug outputs
 		System.out.println(svmResults);
@@ -101,6 +103,7 @@ public class LocalHistogramAnalyzer {
 		// (a, b) -> b.getValue().compareTo(a.getValue())
 		// List<String> vocabularyList = vocabulary.keySet().stream()
 		// .collect(Collectors.toList());
+
 		documents.stream().forEach(
 				e -> e.setTerms(e.getTerms().stream()
 						.filter(d -> vocabularyList.contains(d))
@@ -108,10 +111,10 @@ public class LocalHistogramAnalyzer {
 		return vocabularyList;
 	}
 
-	private void generateLowbowForAllDocs(List<Document> documents,
+	private List<Document> generateLowbowForAllDocs(List<Document> documents,
 			List<String> vocabulary, int numberOfLocalHistograms) {
 		System.out.println("[LOG] generating LOWBOW");
-		documents
+		List<Document> sortedLowbowDocuments = documents
 				.parallelStream()
 				.map(e -> {// generate set of Histograms
 					List<List<Double>> localHistograms = generateLocalHistograms(
@@ -122,11 +125,11 @@ public class LocalHistogramAnalyzer {
 					List<Double> lowbowHist = histogramAggregator
 							.generateAggregatedHistogram(vocabulary,
 									localHistograms);
-					e.setLowbowHistogram(lowbowHist);
-					return lowbowHist;
-
-				}).forEach(e -> System.out.print("."));
-
+					// e.setLowbowHistogram(lowbowHist);
+					return new Document(e.getTextInstance(), e.getTerms(),
+							lowbowHist);
+				}).sorted().collect(Collectors.toList());
+		return sortedLowbowDocuments;
 	}
 
 	private List<List<Double>> generateLocalHistograms(List<String> vocabulary,
