@@ -10,7 +10,7 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 
 import corpus.TextInstance;
 
-public class Document {
+public class Document implements Comparable<Document> {
 
 	private TextInstance text;
 	private List<String> termsW;
@@ -19,6 +19,14 @@ public class Document {
 	public Document(TextInstance text) {
 		super();
 		this.text = text;
+	}
+
+	public Document(TextInstance text, List<String> termsW,
+			List<Double> lowbowHistogram) {
+		super();
+		this.text = text;
+		this.termsW = termsW;
+		this.lowbowHistogram = lowbowHistogram;
 	}
 
 	public List<String> getTerms() {
@@ -98,6 +106,13 @@ public class Document {
 
 	public void setLowbowHistogram(List<Double> lowbowHistogram) {
 		this.lowbowHistogram = lowbowHistogram;
+	}
+
+	@Override
+	public int compareTo(Document o) {
+		// Comparing by FileNames
+		return text.getTextSource().getName()
+				.compareTo(o.getTextInstance().getTextSource().getName());
 	}
 
 }
