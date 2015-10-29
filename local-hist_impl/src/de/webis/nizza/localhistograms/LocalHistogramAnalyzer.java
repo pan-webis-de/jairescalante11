@@ -70,6 +70,19 @@ public class LocalHistogramAnalyzer {
 		return svmResults;
 	}
 
+	private int compareEntryToEntry(Entry<String, Long> one,
+			Entry<String, Long> two) {
+
+		// first comparision level
+		int i = two.getValue().compareTo(one.getValue());
+		if (i != 0) {
+			return i;
+		}
+
+		// second comparison level
+		return two.getKey().compareTo(one.getKey());
+	}
+
 	private List<String> generateVocabulary(List<Document> documents) {
 		System.out.println("[LOG] starting vocabulary");
 		Map<String, Long> vocabulary = documents
@@ -81,9 +94,11 @@ public class LocalHistogramAnalyzer {
 
 		System.out.println("[LOG] Finished Vocabulary");
 		List<String> vocabularyList = vocabulary.entrySet().stream()
-				.sorted((a, b) -> b.getValue().compareTo(a.getValue()))
-				.limit(mostCommonNGramCount).map(e -> e.getKey())
-				.collect(Collectors.toList());
+				.sorted(this::compareEntryToEntry).limit(mostCommonNGramCount)
+				// .peek(System.out::print)
+				.map(e -> e.getKey()).collect(Collectors.toList());
+		// comparator-tests:
+		// (a, b) -> b.getValue().compareTo(a.getValue())
 		// List<String> vocabularyList = vocabulary.keySet().stream()
 		// .collect(Collectors.toList());
 		documents.stream().forEach(
