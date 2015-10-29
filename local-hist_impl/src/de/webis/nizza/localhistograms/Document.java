@@ -111,8 +111,8 @@ public class Document implements Comparable<Document> {
 	@Override
 	public int compareTo(Document o) {
 		// Comparing by FileNames
-		return text.getTextSource().getName()
-				.compareTo(o.getTextInstance().getTextSource().getName());
+		return text.getTextSource().compareTo(
+				o.getTextInstance().getTextSource());
 	}
 
 }
