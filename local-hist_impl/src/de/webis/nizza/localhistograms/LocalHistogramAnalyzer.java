@@ -103,12 +103,7 @@ public class LocalHistogramAnalyzer {
 		System.out.println("[LOG] Finished Vocabulary");
 		List<String> vocabularyList = vocabulary.entrySet().stream()
 				.sorted(this::compareEntryToEntry).limit(mostCommonNGramCount)
-				// .peek(System.out::print)
 				.map(e -> e.getKey()).collect(Collectors.toList());
-		// comparator-tests:
-		// (a, b) -> b.getValue().compareTo(a.getValue())
-		// List<String> vocabularyList = vocabulary.keySet().stream()
-		// .collect(Collectors.toList());
 
 		documents.stream().forEach(
 				e -> e.setTerms(e.getTerms().stream()
@@ -131,7 +126,7 @@ public class LocalHistogramAnalyzer {
 					List<Double> lowbowHist = histogramAggregator
 							.generateAggregatedHistogram(vocabulary,
 									localHistograms);
-					// e.setLowbowHistogram(lowbowHist);
+
 					return new Document(e.getTextInstance(), e.getTerms(),
 							lowbowHist);
 				}).sorted().collect(Collectors.toList());
@@ -181,8 +176,8 @@ public class LocalHistogramAnalyzer {
 					.parseDouble(corpus
 							.getAuthorTextMapping()
 							.get(unknownDoc.getTextInstance().getTextSource()
-									.getName()).substring(9, 14))); // TODO
-																	// 7,12?
+									.getName()).substring(9, 14)));
+
 			toPassValues.addAll(unknownDoc.getLowbowHistogram());
 			SvmResult result = svm.evaluate(toPassValues
 					.toArray(new Double[unknown.get(0).getLowbowHistogram()
@@ -229,17 +224,12 @@ public class LocalHistogramAnalyzer {
 			throws FileNotFoundException, IOException {
 		String docText = NGramGenerator
 				.removeLineBreaksAndOtherStuff(singleText.getFullText());
-		// TODO ngrams variabel
+
 		List<String> nGrams = nGramtype.generateNgrams(nGramSize, docText);
 
 		Document doc = new Document(singleText);
 		doc.setTerms(nGrams);
 
-		// TODO map to set?
-		// System.out.println(doc.generateFrequencyMap());
-		// Set<Entry<String, Long>> entries = doc.generateFrequencyMap()
-		// .entrySet();
-		// System.out.println(entries);
 		return doc;
 	}
 
