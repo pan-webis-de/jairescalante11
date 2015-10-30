@@ -115,4 +115,11 @@ public class Document implements Comparable<Document> {
 				o.getTextInstance().getTextSource());
 	}
 
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "Document: " + text.getTrueAuthor() + " " + text.getTextSource()
+				+ " " + lowbowHistogram;
+	}
+
 }

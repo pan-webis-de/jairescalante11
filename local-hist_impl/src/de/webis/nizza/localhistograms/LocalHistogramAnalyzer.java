@@ -2,6 +2,8 @@ package de.webis.nizza.localhistograms;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,6 +50,10 @@ public class LocalHistogramAnalyzer {
 				documents, vocabulary, numberOfLocalHistograms);
 
 		// TODO werte in vektor zwischen 0 und 1
+
+		// Files.write(Paths.get("/tmp/run2.txt"),
+		// sortedLowbowDocuments.stream()
+		// .map(e -> e.toString()).collect(Collectors.toList()));
 
 		List<EnrichedSvmResult> svmResults = predictAuthorsWithSVM(corpus,
 				sortedLowbowDocuments);
