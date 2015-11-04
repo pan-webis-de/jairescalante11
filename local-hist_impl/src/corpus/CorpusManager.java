@@ -16,7 +16,7 @@ import javax.json.JsonReader;
 
 import util.Utilities;
 
-public class CorpusManager implements ICorpusManager {
+public class CorpusManager {
 	private Path corpusLocation;
 	private String metaFileName = "meta-file.json";
 	private String groundTruthFileName = "ground-truth.json";
@@ -42,22 +42,12 @@ public class CorpusManager implements ICorpusManager {
 					+ metaFile.toString() + "'");
 		}
 
-		if (!groundTruthFile.exists()) {
-			throw new IOException("Could not find groundTruth file '"
-					+ groundTruthFile.toString() + "'");
-		}
-
 		JsonObject metadata = null;
-		JsonObject groundData = null;
 
 		try (InputStream metaInputStream = new FileInputStream(metaFile);
-				JsonReader metaReader = Json.createReader(metaInputStream);
-				InputStream groundInputStream = new FileInputStream(
-						groundTruthFile);
-				JsonReader groundReader = Json.createReader(groundInputStream);) {
+				JsonReader metaReader = Json.createReader(metaInputStream);) {
 
 			metadata = metaReader.readObject();
-			groundData = groundReader.readObject();
 		} catch (Exception e) {
 			throw new IOException("Failed to read JSON: " + e.getMessage());
 		}
@@ -80,11 +70,29 @@ public class CorpusManager implements ICorpusManager {
 		discoverKnownTexts();
 		knownTextIterator = knownTexts.iterator();
 
-		authorTextMapping = new HashMap<String, String>();
-		for (JsonObject truth : groundData.getJsonArray("ground-truth")
-				.getValuesAs(JsonObject.class)) {
-			authorTextMapping.put(truth.getString("unknown-text"),
-					truth.getString("true-author"));
+		// Reading Groundtruth file is optional
+
+		JsonObject groundData = null;
+		authorTextMapping = null;
+		if (groundTruthFile.exists()) {
+			try (InputStream groundInputStream = new FileInputStream(
+					groundTruthFile);
+					JsonReader groundReader = Json
+							.createReader(groundInputStream);) {
+
+				groundData = groundReader.readObject();
+			} catch (Exception e) {
+				throw new IOException("Failed to read JSON: " + e.getMessage());
+			}
+
+			authorTextMapping = new HashMap<String, String>();
+			for (JsonObject truth : groundData.getJsonArray("ground-truth")
+					.getValuesAs(JsonObject.class)) {
+				authorTextMapping.put(truth.getString("unknown-text"),
+						truth.getString("true-author"));
+			}
+		}else {
+			System.err.println("No ground truth file found - No evaluation possible");
 		}
 	}
 
@@ -124,7 +132,6 @@ public class CorpusManager implements ICorpusManager {
 		}
 	}
 
-	@Override
 	public TextInstance getNextText() {
 		if (knownTextIterator.hasNext()) {
 			return knownTextIterator.next();
@@ -133,8 +140,11 @@ public class CorpusManager implements ICorpusManager {
 		}
 	}
 
-	@Override
 	public boolean validateUnknownAttribution(File text, String author) {
+		if (authorTextMapping == null) {
+			return false;
+		}
+
 		if (authorTextMapping.get(text) == author) {
 			return true;
 		} else {
@@ -142,12 +152,10 @@ public class CorpusManager implements ICorpusManager {
 		}
 	}
 
-	@Override
 	public List<String> getAllAuthors() {
 		return authors;
 	}
 
-	@Override
 	public int getTextCount() {
 		return knownTexts.size();
 	}
@@ -164,7 +172,6 @@ public class CorpusManager implements ICorpusManager {
 		}
 	}
 
-	@Override
 	public TextInstance getUnknownText() {
 		if (unknownTextIterator.hasNext()) {
 			return unknownTextIterator.next();
@@ -173,7 +180,6 @@ public class CorpusManager implements ICorpusManager {
 		}
 	}
 
-	@Override
 	public int getUnknownTextCount() {
 		return unknownTexts.size();
 	}

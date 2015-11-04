@@ -2,9 +2,8 @@ package de.webis.nizza.localhistograms;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +11,10 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.security.sasl.AuthorizeCallback;
+
 import libsvm.svm_model;
 import corpus.CorpusManager;
-import corpus.ICorpusManager;
 import corpus.TextInstance;
 import de.webis.nizza.localhistograms.aggregatedHistogram.AggregatedHistogram;
 import de.webis.nizza.localhistograms.aggregatedHistogram.BagOfLocalHistograms;
@@ -172,12 +172,19 @@ public class LocalHistogramAnalyzer {
 		List<EnrichedSvmResult> svmResults = new ArrayList<>();
 		for (Document unknownDoc : unknown) {
 			List<Double> toPassValues = new ArrayList<>();
-			toPassValues.add(Double
-					.parseDouble(corpus
-							.getAuthorTextMapping()
-							.get(unknownDoc.getTextInstance().getTextSource()
-									.getName()).substring(9, 14)));
 
+			//first element in line (list) is true author of the document - to be predicted by svm
+			HashMap<String, String> authorTextMapping = corpus
+					.getAuthorTextMapping();
+			if (authorTextMapping != null) {
+				toPassValues.add(Double.parseDouble(authorTextMapping.get(
+						unknownDoc.getTextInstance().getTextSource().getName())
+						.substring(9, 14)));
+			} else {
+				//No ground truth file available
+				toPassValues.add(Double.NaN);
+			}
+			
 			toPassValues.addAll(unknownDoc.getLowbowHistogram());
 			SvmResult result = svm.evaluate(toPassValues
 					.toArray(new Double[unknown.get(0).getLowbowHistogram()
@@ -192,7 +199,7 @@ public class LocalHistogramAnalyzer {
 		return svmResults;
 	}
 
-	private List<Document> generateNgrams(ICorpusManager corpus, int nGramSize,
+	private List<Document> generateNgrams(CorpusManager corpus, int nGramSize,
 			NGramGenerator nGramtype) throws FileNotFoundException, IOException {
 		List<Document> documents = new LinkedList<Document>();
 

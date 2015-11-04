@@ -91,15 +91,6 @@ public class Document implements Comparable<Document> {
 		return result;
 	}
 
-	// FIXME test!
-	public static Map<String, Long> mergeMaps(Map<String, Long> bigOne,
-			Map<String, Long> map2) {
-		bigOne.forEach((k, v) -> map2.merge(k, v, (v1, v2) -> {
-			return Long.sum(v1, v2);
-		}));
-		return bigOne;
-	}
-
 	public List<Double> getLowbowHistogram() {
 		return lowbowHistogram;
 	}
@@ -117,7 +108,6 @@ public class Document implements Comparable<Document> {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return "Document: " + text.getTrueAuthor() + " " + text.getTextSource()
 				+ " " + lowbowHistogram;
 	}
