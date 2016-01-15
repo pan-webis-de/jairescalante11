@@ -2,7 +2,7 @@
 
 This is a reimplementation of the approach to authorship attribution originally described in
 
-> H. Jair Escalante, T. Solorio, and M. Montes-y-Gómez. [Local histograms of character n-grams for authorship attribution](http://www.aclweb.org/anthology/P/P11/P11-1030.pdf). In Proc. of ACL, pp. 288-298, 2011 [[paper](http://www.aclweb.org/anthology/P/P11/P11-1030.pdf)]
+> Hugo Jair Escalante, Thamar Solorio, and Manuel Montes-y-Gómez. [Local histograms of character n-grams for authorship attribution](http://www.aclweb.org/anthology/P/P11/P11-1030.pdf). In Proc. of ACL, pp. 288-298, 2011 [[paper](http://www.aclweb.org/anthology/P/P11/P11-1030.pdf)]
 
 It was reimplemented as part of a science reproducibility study alongside [14 other authorship attribution approaches](https://github.com/search?q="Who+wrote+the+web"+user:pan-webis-de). The results of the reproducibility study can be found in
 
