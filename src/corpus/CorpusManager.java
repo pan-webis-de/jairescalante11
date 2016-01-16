@@ -111,7 +111,7 @@ public class CorpusManager {
 			for (Path text : texts) {
 				if (text.toFile().exists()) {
 					TextInstance instance = new TextInstance(author,
-							text.toFile());
+							text.toFile(), encoding);
 					knownTexts.add(instance);
 				} else {
 					System.err.println("Could not locate file "
@@ -127,7 +127,7 @@ public class CorpusManager {
 		List<Path> texts = Utilities.getDirectoryContents(unknown);
 		for (Path unknownText : texts) {
 			TextInstance instance = new TextInstance(unknownText.toFile()
-					.getName(), unknownText.toFile());
+					.getName(), unknownText.toFile(), encoding);
 			unknownTexts.add(instance);
 		}
 	}
@@ -158,6 +158,10 @@ public class CorpusManager {
 
 	public int getTextCount() {
 		return knownTexts.size();
+	}
+	
+	public String getLanguage() {
+		return language;
 	}
 
 	public static void main(String[] args) {

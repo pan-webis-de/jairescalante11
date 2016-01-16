@@ -1,5 +1,7 @@
 package jairescalante11.svm;
 
+import jairescalante11.Document;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,18 +11,14 @@ import libsvm.svm_model;
 import libsvm.svm_node;
 import libsvm.svm_parameter;
 import libsvm.svm_problem;
-import jairescalante11.Document;
 
 public class SvmCalc {
 
     Double[][] train; // train[i] -> one document
-    private List<Document> documents;
     private int dataCount;
     private List<Document> knownDocuments;
 
     public SvmCalc(List<Document> documents) {
-        this.documents = documents;
-
         this.knownDocuments = documents
                 .stream()
                 .filter(e -> !e.getTextInstance().getTrueAuthor()

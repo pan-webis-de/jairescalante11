@@ -1,6 +1,5 @@
 package corpus;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,22 +8,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TextInstance {
 	private String trueAuthor;
 	private File textSource;
+	private String expectedEncoding;
 	
-	public TextInstance(String author, File newTextSource)
+	public TextInstance(String author, File newTextSource, String expectedEncoding)
 	{
 		trueAuthor = author;
 		textSource = newTextSource;
+		this.expectedEncoding = expectedEncoding;
 	}
 	
 	/**
@@ -38,8 +36,12 @@ public class TextInstance {
 	 */
 	public String getFullText() throws FileNotFoundException, IOException {
 		
+		
 		InputStream in = new FileInputStream(textSource);
-		CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();
+		CharsetDecoder decoder = expectedEncoding != null && 
+				Charset.isSupported(expectedEncoding) ?
+				Charset.forName(expectedEncoding).newDecoder() :
+				StandardCharsets.UTF_8.newDecoder();
 		decoder.onMalformedInput(CodingErrorAction.IGNORE);
 		
 		final char[] buffer = new char[1024];

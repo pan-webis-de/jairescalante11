@@ -1,5 +1,6 @@
 package libsvm;
 
+@SuppressWarnings("serial")
 public class svm_parameter implements Cloneable, java.io.Serializable {
 	/* svm_type */
 	public static final int C_SVC = 0;

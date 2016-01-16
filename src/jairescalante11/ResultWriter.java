@@ -1,5 +1,7 @@
 package jairescalante11;
 
+import jairescalante11.svm.EnrichedSvmResult;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.HashMap;
@@ -12,8 +14,6 @@ import javax.json.JsonObject;
 import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import javax.json.stream.JsonGenerator;
-
-import jairescalante11.svm.EnrichedSvmResult;
 
 public class ResultWriter {
 

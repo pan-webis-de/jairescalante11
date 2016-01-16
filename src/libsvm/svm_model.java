@@ -2,6 +2,7 @@
 // svm_model
 //
 package libsvm;
+@SuppressWarnings("serial")
 public class svm_model implements java.io.Serializable
 {
 	public svm_parameter param;	// parameter

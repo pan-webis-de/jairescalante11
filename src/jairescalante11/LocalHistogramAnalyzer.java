@@ -1,5 +1,13 @@
 package jairescalante11;
 
+import jairescalante11.aggregatedHistogram.AggregatedHistogram;
+import jairescalante11.aggregatedHistogram.BagOfLocalHistograms;
+import jairescalante11.ngram.CharNGramGenerator;
+import jairescalante11.ngram.NGramGenerator;
+import jairescalante11.svm.EnrichedSvmResult;
+import jairescalante11.svm.SvmCalc;
+import jairescalante11.svm.SvmResult;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,16 +18,9 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import jairescalante11.aggregatedHistogram.AggregatedHistogram;
-import jairescalante11.ngram.NGramGenerator;
-import jairescalante11.svm.EnrichedSvmResult;
-import jairescalante11.svm.SvmCalc;
-import jairescalante11.svm.SvmResult;
 import libsvm.svm_model;
 import corpus.CorpusManager;
 import corpus.TextInstance;
-import jairescalante11.aggregatedHistogram.BagOfLocalHistograms;
-import jairescalante11.ngram.CharNGramGenerator;
 
 /**
  * Central class of Implementation. Start with .analyze()

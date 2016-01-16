@@ -67,8 +67,6 @@ public class Document implements Comparable<Document> {
 		int subsetLength = numberOfNgrams / numberOfLocalHistograms; // floor
 		List<Double> termsWeighted = new LinkedList<>();
 		for (int i = 0; i < this.getTerms().size(); i++) {
-			String term = this.getTerms().get(i);
-
 			termsWeighted.add(kernelFunction(
 					Math.ceil((double) i / (double) subsetLength)
 							/ (double) numberOfLocalHistograms, (double) i

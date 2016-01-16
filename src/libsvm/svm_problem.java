@@ -1,4 +1,5 @@
 package libsvm;
+@SuppressWarnings("serial")
 public class svm_problem implements java.io.Serializable
 {
 	public int l;
