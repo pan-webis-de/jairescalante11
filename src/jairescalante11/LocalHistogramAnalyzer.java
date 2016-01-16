@@ -1,4 +1,4 @@
-package de.webis.nizza.localhistograms;
+package jairescalante11;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,18 +11,16 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.security.sasl.AuthorizeCallback;
-
+import jairescalante11.aggregatedHistogram.AggregatedHistogram;
+import jairescalante11.ngram.NGramGenerator;
+import jairescalante11.svm.EnrichedSvmResult;
+import jairescalante11.svm.Svm;
+import jairescalante11.svm.SvmResult;
 import libsvm.svm_model;
 import corpus.CorpusManager;
 import corpus.TextInstance;
-import de.webis.nizza.localhistograms.aggregatedHistogram.AggregatedHistogram;
-import de.webis.nizza.localhistograms.aggregatedHistogram.BagOfLocalHistograms;
-import de.webis.nizza.localhistograms.ngram.CharNGramGenerator;
-import de.webis.nizza.localhistograms.ngram.NGramGenerator;
-import de.webis.nizza.localhistograms.svm.EnrichedSvmResult;
-import de.webis.nizza.localhistograms.svm.Svm;
-import de.webis.nizza.localhistograms.svm.SvmResult;
+import jairescalante11.aggregatedHistogram.BagOfLocalHistograms;
+import jairescalante11.ngram.CharNGramGenerator;
 
 public class LocalHistogramAnalyzer {
 

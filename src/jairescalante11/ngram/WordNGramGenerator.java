@@ -1,4 +1,4 @@
-package de.webis.nizza.localhistograms.ngram;
+package jairescalante11.ngram;
 
 import java.util.ArrayList;
 import java.util.List;

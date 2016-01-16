@@ -1,9 +1,9 @@
-package de.webis.nizza.localhistograms;
+package jairescalante11;
 
 import java.io.IOException;
 import java.util.List;
 
-import de.webis.nizza.localhistograms.svm.EnrichedSvmResult;
+import jairescalante11.svm.EnrichedSvmResult;
 
 public class Main {
 

@@ -1,4 +1,4 @@
-package de.webis.nizza.localhistograms.svm;
+package jairescalante11.svm;
 
 public class SvmResult {
 

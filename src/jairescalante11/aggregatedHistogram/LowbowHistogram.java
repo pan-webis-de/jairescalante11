@@ -1,4 +1,4 @@
-package de.webis.nizza.localhistograms.aggregatedHistogram;
+package jairescalante11.aggregatedHistogram;
 
 import java.util.LinkedList;
 import java.util.List;

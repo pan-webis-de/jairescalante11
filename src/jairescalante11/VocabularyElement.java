@@ -1,4 +1,4 @@
-package de.webis.nizza.localhistograms;
+package jairescalante11;
 
 public class VocabularyElement {
 

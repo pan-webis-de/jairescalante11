@@ -1,4 +1,4 @@
-package de.webis.nizza.localhistograms.svm;
+package jairescalante11.svm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import libsvm.svm_model;
 import libsvm.svm_node;
 import libsvm.svm_parameter;
 import libsvm.svm_problem;
-import de.webis.nizza.localhistograms.Document;
+import jairescalante11.Document;
 
 public class Svm {
 

@@ -1,4 +1,4 @@
-package de.webis.nizza.localhistograms;
+package jairescalante11;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,7 +13,7 @@ import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import javax.json.stream.JsonGenerator;
 
-import de.webis.nizza.localhistograms.svm.EnrichedSvmResult;
+import jairescalante11.svm.EnrichedSvmResult;
 
 public class ResultWriter {
 
