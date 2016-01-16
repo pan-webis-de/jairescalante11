@@ -1,7 +1,0 @@
-corpora/
-bin/
-*~
-*.class
-
-.idea/
-local-hist_impl.iml
