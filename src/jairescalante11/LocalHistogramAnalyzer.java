@@ -1,6 +1,5 @@
 package jairescalante11;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -211,7 +210,7 @@ public class LocalHistogramAnalyzer {
                         .contains("unknown")).collect(Collectors.toList());
 
         SvmCalc svm = new SvmCalc(documents);
-        svm_model model = svm.svmTrain();
+        svm_model model = svm.trainSvm();
 
         List<EnrichedSvmResult> svmResults = new ArrayList<>();
         for (Document unknownDoc : unknown) {
