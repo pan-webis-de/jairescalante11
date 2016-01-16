@@ -14,7 +14,12 @@ If you use this reimplementation in your own research, please make sure to cite 
 
 To execute the software, install it and make sure all its dependencies are installed as well; then run the software using the following command:
 
+`java -jar escalante.jar -i <path-to-input-data> -o <output-path>/answers.json`
+
+For large test sets it may be required to give more memory to java. Then you can use the following command (e.g. with 14 GB of RAM): 
+
 `java -Xmx14336M -Xms14336M -jar escalante.jar -i <path-to-input-data> -o <output-path>/answers.json`
+
 
 ## Input and Output Formats
 
