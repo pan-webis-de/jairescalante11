@@ -13,8 +13,6 @@ public class Main {
 			System.err.println("Please provide correct arguments.");
 		} else {
 
-			// TODO validate input args
-			// TODO JVM more RAM...
 			String inPath = "";
 			if (args[0].equals("-i")) {
 				inPath = args[1];
@@ -31,8 +29,7 @@ public class Main {
 
 			try {
 
-				List<EnrichedSvmResult> results = new LocalHistogramAnalyzer(
-						inPath).analyze();
+				List<EnrichedSvmResult> results = new LocalHistogramAnalyzer(inPath).analyze();
 				new ResultWriter(outPath).writeJsonFile(results);
 			} catch (IOException up) {
 				System.err.println("Fail. " + up.getMessage());

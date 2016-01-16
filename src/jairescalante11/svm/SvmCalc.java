@@ -11,14 +11,14 @@ import libsvm.svm_parameter;
 import libsvm.svm_problem;
 import jairescalante11.Document;
 
-public class Svm {
+public class SvmCalc {
 
 	Double[][] train; // train[i] -> ein document
 	private List<Document> documents;
 	private int dataCount;
 	private List<Document> knownDocuments;
 
-	public Svm(List<Document> documents) {
+	public SvmCalc(List<Document> documents) {
 		this.documents = documents;
 
 		this.knownDocuments = documents
